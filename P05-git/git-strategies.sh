@@ -1,3 +1,5 @@
+ windows credential manager --> where authentication tokens saved
+ 
  #sharing code and versioning,git is distributed version control system
  #centralised vcs
  cvs

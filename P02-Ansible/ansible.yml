@@ -1,0 +1,45 @@
+# ex1:- 01-ping.yml
+
+- name: ping server
+  hosts: web
+  tasks: 
+  - name: ping the server
+    ansible.builtin.package:
+
+#ex2:- multiplay
+
+- name: play-01
+  hosts: web
+  tasks:
+  - name:
+    ansible.builtin.debug:
+      msg: "this is from paly-01"
+
+- name: play-02
+  hosts: web
+  tasks:
+  - name:
+    ansible.builtin.debug:
+      msg: "this is from paly-02"
+
+#ex3:-
+
+- name: nginx install and run
+  hosts:
+  become: yes
+  tasks:
+  - name: install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+
+  - name: run nginx
+    ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes
+      
+
+
+
+

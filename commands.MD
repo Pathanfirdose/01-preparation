@@ -1,3 +1,12 @@
+Linux
+
+ssh-keygen -f <keyname> --> to generate the key
+
+<key.pem> private key
+<key.pub> public ley
+
+ssh -i <key.pem> user@ip or hostname --> to login into the server
+
 #################################
 ### Basic navigation commands ###
 #################################
@@ -6,16 +15,200 @@ pwd
 # show current directory
 ls 
 # list
-ls -ltr
-cat 
+ls -l # list files
+
+ls -lt # with time stamp
+
+ls -ltr # time stamp and reverse order
+
+ls -lr # reverse order
+
+ls -la # shows hidden files
+
+ls --help # command usgae
+
+cat > <filename> write content then ctrl+D
+
+cat >> <filename> write content without rewrite then ctrl+D
+
+cat <filename> # read text
+
+mv <old-file-name> <new-file-name> # rename file or to move file to another directory
+mv <source-file-name> <directory-name> # moves source file to destination directory
+
+cp <source-file> <destination-file> # copy file content to new another file
+
+grep <word-to-find> <file-name> # to see specific word
+
+# linux is case sensitive Devopsand devops are not same
+
+grep -i <word-to-search> <file-name> # to see word with case sensitive it will show both
+
+wget <url-to-download> # to download file
+
+curl <url-to-download> # to show the text on terminal and to run scripts
+ex:- curl -sL https://example.com/path/to/script.sh | bash
+     
+
+| # pipe is used to send output to next command
+
+ex:- echo https://raw.githubusercontent.com/daws-81s/notes/refs/heads/main/session-01.txt | cut -d "/" -f1
+
+awk -F "/" '{print -1F}'
+
+ex:- echo https://raw.githubusercontent.com/daws-81s/notes/refs/heads/main/session-01.txt | awk -F "/" '{print -1F}'
+
+awk -F ":" '{print $1F}' # to print the first fragments in all columns
+awk -F ":" '{print $1F,$3F}'
+
+head <file-name> # first 10 lines
+head -n 5 <file-name> first 5 lines
+tail <file-name> # last 10 lines
+tail -n 5 <file-name> # last 5 lines
+cat <file-name> | head -n 10 | tail -n 5 # if we want to get middle lines
+
+tail -f /var/log/messages # to see running logs of servers
+
+:%d delete everything
+:1d delete first lin
+:s/which word/what you want # to replaces the word where your cursor is and only first occurance
+:s/which word/what you want/g # to replaces the word where your cursor is and all occurance in that line
+:3s/sbin/SBIN # to replace in particular line
+:%s/sbin/SBIN/g # to replace all occurances in all lines in file
+
+ESC mode
+u # to undo the changes
+shift+g # goes to bottom
+gg goes to top
+yy to copy
+p to paste
+10p it pastes 10 times
+dd to delete the line
+
+INSERT mode
+to insert
+
+
+drwxr-xr-x 2 ec2-user ec2-user   61 Dec  4 04:44 dir3 --> dierectory
+-rw-r--r-- 1 ec2-user ec2-user 1124 Dec  4 04:41 passwd --> file
+
+rw- --> owner
+r-- --> group
+r-- --> others
+
+r 4 Read
+w 2 Write
+x 1 Execute
+
+when you dont assign group to user his group name will be same as his user name
+
+chmod o+rwx <file-name>
+chmod o-rwx <file-name>
+chmod ugo+rwx <file-name>
+chmod 777 <file-name>
+
+
 mkdir
+
 vim
-cd 
-rmdir
-rm -rf
+
+cd .. # relational path
+cd /home/ec2-user # obsolute path
+
+rmdir # to delete empty directory
+
+rm -rf # to dlete directory and content
+
 touch
-cp
-mv
+
+Linux Administration
+#####################
+
+useradd <user-name>
+ex:- useradd ramesh
+
+id --> info about current logged in user
+
+id <user-name> --> display about user
+ex:- id ramesh
+
+passwd <user-name> --> to setup password
+ex:-passwd ramesh  -->then it prompts to enter password
+
+groupadd <group-name>
+ex:-groupadd devops --> to create new group
+
+usermod -g <group-name> <user-name>
+ex:- usermod -g devops ramesh --> to add user to primary group
+
+usermod -aG <group-name> <user-name>
+ex:- usermod -g testing ramesh --> to add user to secondary group
+
+gpasswd -d <user-name> <group-name>
+ex:- gpasswd -d ramesh testing --> to remove user from group
+
+we cannot remove users primary group so when we want delete user first we have to add he hiself to primary group then delete
+
+userdel <user-name>
+ex:-userdel ramesh --> to delete user
+
+groupdel <group-name>
+ex:- groupdel testing --> to delete group
+
+vim /etc/ssh/sshd_config --> sshd config file where we can edit authentication types
+
+/home/ec2-user/.ssh/authorized_keys --> authorized keys for users to authenticate
+/home/root/.ssh/authorized_keys
+/home/suresh/.ssh/authorized_keys
+
+chown -R <user-name>:<group-name> <file-name>
+ex:- chown -R ramesh:ramesh .ssh --> to change the ownership of files or directory
+
+cat /proc/cpuinfo --> checks cpu info
+cat /proc/meminfo --> checks memory info
+cat /etc/os-release --> checks Os type
+
+ps
+ps -ef --> to see all the running processes "-e" means all "f" means full formate
+ps -ef | grep nginx --> to see the process related to nginx
+
+sleep 100 --> sleeps for 100 seconds in foreground
+sleep 100 & --> sleeps for 100 seconds in background
+ps -ef | grep sleep
+
+top  --> The top command is a real-time system monitoring tool in Linux that displays a        continuously updating view of processes, CPU usage, memory consumption, load average, and other system metrics, helping administrators quickly identify resource-intensive processes; it allows interactive actions like killing processes, sorting by CPU or memory, and filtering tasks, making it essential for diagnosing performance issues and observing how the system behaves over time.
+
+kill <PID> --> to kill process use this command with process instance id PID
+
+kill -9 <PID> --> to force kill
+
+troubleshooting steps
+--------------------
+
+netstat -lntp --> to check which ports opened
+
+less /var/log/messages
+tail -f /var/log/messages --> -f means its following the logs
+shift+g --> to go up and gg to go down
+
+ping <ip-host> 
+--> The ping command is a network diagnostic tool used to test connectivity between your machine and another host by sending ICMP echo requests and measuring how long it takes to receive replies, helping you verify if a device is reachable, check network latency, detect packet loss, and identify potential network issues such as high delay or disconnection.
+
+
+telnet <ip> <port>
+telnet 172.31.20.70 3306
+--> telnet is a command-line tool and protocol used to connect to remote systems over TCP, typically on port 23, allowing you to open an interactive text-based session with a server; although it can be used for basic remote login or testing open ports and network connectivity, it is largely considered insecure because it sends all data—including passwords—in plain text, so modern systems prefer SSH for secure access while still using Telnet mainly for troubleshooting or connecting to devices that only support it.
+
+DNS resolver
+
+nslookup <url> --> to check the ip address of website
+ex:- nslookup facebook.com
+
+free -m --> to check the ram
+
+df -hT --> disk space in human readable
+
+cat /etc/nginx/nginx.conf
 
 #########################################
 ### file permissions and ownerships #####
