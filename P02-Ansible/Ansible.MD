@@ -22,6 +22,7 @@
 
 # ex1:- 01-ping.yml
 
+```yaml
 - name: ping server
   host: web
   tasks: 

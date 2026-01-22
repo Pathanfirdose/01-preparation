@@ -1,10 +1,11 @@
-##########################
-### TERRAFORM COMMANDS ###
-##########################
+```bash
+
+# TERRAFORM COMMANDS
 
 terraform init
 terraform init -reconfigure
-terraform init -upgrade
+terraform init -upgrade # upgrades provider plugin
+terraform validate
 terraform taint 
 terraform plan
 terraform apply
@@ -13,15 +14,24 @@ terraform apply -auto-approve
 terraform apply -target
 terraform destroy
 terraform destroy -auto-approve
+terraform refresh # updates state file to match actual infra
+# inspect state
+terraform show # shows current state
+terraform state list # lists all resources
+terraform state show <resource> # shows one resource
+
 
 #######################
 ### VARIABLE TYPES ####
 #######################
 
+variables make configuration reusable and dynamic
+
 Default variables
 
 1.command line variable
 terraform apply -var="instance_type=t2.micro"
+terraform apply -var-file=dev.tfvars
 
 2.terraform.tfvars
 
@@ -51,3 +61,15 @@ terraform workspace new dev
 terraform workspace new prod
 terraform workspace select dev
 terraform workspace select prod
+
+/project
+  -main.tf
+  -variables.tf
+  -outputs.tf
+  -modules
+    -vpc
+      -main.tf
+      -variables
+      -outputs.tf
+      
+
