@@ -15,6 +15,7 @@
 * Observability & Monitoring tools (for Monitoring- Splunk/**Grafana**/**Prometheus** or any)
 
 * Strong understanding of hybrid connectivity in AWS and hands-on experience with Direct Connect or Site-to-Site VPN configuration, good understanding of multi-account, multi-VPC setup and configuration, cross-VPC connectivity, cross-cloud connectivity.
+
 Hands on experience in Cloud AWS and it’s services.
 Hands on Project Experience with AWS Compute Service: EKS, EC2, Autoscaling, Load Balancers.
 Hands on Project Experience with AWS Storage Service: S3, EFS, EBS.
