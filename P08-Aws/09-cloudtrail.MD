@@ -18,4 +18,4 @@ Benefits
 * Governance: Enforces policies and controls access.
 * Risk Auditing: Monitors for suspicious activities and unauthorized access.
 * Security: Enhances security posture by providing a clear audit trail.
-*Troubleshooting: Quickly find out what changed in your environment. 
+* Troubleshooting: Quickly find out what changed in your environment. 
