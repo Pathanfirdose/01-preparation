@@ -7,6 +7,15 @@ The Kubernetes control plane is the brain of the cluster that manages and coordi
 # namespace
 In Kubernetes, a namespace is a logical partition within a cluster that isolates and organizes resources so teams, applications, or environments can work without interfering with each other; it provides scoped naming, separate resource quotas, access control boundaries, and clean separation for things like dev/stage/prod, with default namespaces such as **default**, **kube-system**, **kube-public**, and optional custom namespaces for better management of large multi-tenant clusters.
 
+```yaml
+apiversion: v1
+kind: namespace
+metadata:
+    name: expense
+    labels: 
+        project: expence
+        environment: dev
+```
 # labels
 In Kubernetes, labels are simple key-value pairs attached to objects like pods, services, and deployments to identify, categorize, and group them, enabling flexible selection and filtering without affecting the object's actual configuration; they are used heavily for operations such as pod selection by services, rolling updates by deployments, environment tagging (e.g., `env=prod`), and workload organization, with selectors (label selectors) allowing Kubernetes to target specific groups of resources dynamically.
 
@@ -16,9 +25,50 @@ In Kubernetes, annotations are key-value metadata attached to objects like pods,
 # Pod
 A pod in Kubernetes is the smallest deployable unit that represents one or more tightly coupled containers sharing the same network namespace, IP address, storage volumes, and lifecycle, allowing them to communicate efficiently and behave as a single application component, with Kubernetes scheduling pods onto nodes, restarting them if they fail, and managing them through higher-level controllers like Deployments or StatefulSets since pods themselves are ephemeral and not meant to be managed directly.
 
+```yaml
+apiversion: v1
+kind: pod
+metadata:
+    name: nginx
+spec:
+    containers:
+    - name: nginx
+      image: nginx
+```
+
 # Multicontainer pod
 A multi-container pod is a Kubernetes pod that runs two or more tightly coupled containers which share the same network namespace, IP address, and storage volumes, allowing them to communicate via localhost and work together as a single functional unit; these containers follow specific patterns like **sidecar** (helper container for logging, syncing, or proxying), **ambassador** (proxy for external services), or **adapter** (format/transform output), making multi-container pods useful when containers must collaborate closely while still remaining individually isolated processes.
 
+```yaml
+apiversion: v1
+kind: pod
+metadata:
+    name: multicontainer
+spec:
+    containers:
+    - name: nginx
+      image: nginx
+    - name: almalinux
+      image: almalinux:v1
+      command: ["sleep","100"]
+```
+# labels
+In Kubernetes, labels are simple key-value pairs attached to objects like pods, services, and deployments to identify, categorize, and group them, enabling flexible selection and filtering without affecting the object's actual configuration; they are used heavily for operations such as pod selection by services, rolling updates by deployments, environment tagging (e.g., `env=prod`), and workload organization, with selectors (label selectors) allowing Kubernetes to target specific groups of resources dynamically.
+
+```yaml
+apiversion: v1
+kind: pod
+metadata:
+    name: labels
+    labels:
+        project: expense
+        module: backend
+        environment: dev
+spec:
+    containers:
+    - name: nginx
+      image: nginx
+```
 # CrashLoopBackOff
 **CrashLoopBackOff** in Kubernetes is a pod state that indicates a container is repeatedly crashing and restarting, and Kubernetes is backing off (waiting longer between retries) to avoid an endless loop. It happens when the container starts, fails, restarts, fails again, and so on. Common causes include application errors, missing config/env variables, failed dependencies, wrong image commands, permission issues, or readiness/liveness probe misconfigurations. You can troubleshoot by checking logs (`kubectl logs`), describing the pod (`kubectl describe pod <pod>`), verifying configuration, and fixing the root cause so the container can start successfully without crashing.
 

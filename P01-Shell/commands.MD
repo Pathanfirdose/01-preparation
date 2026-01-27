@@ -51,6 +51,9 @@ ex:- echo https://raw.githubusercontent.com/daws-81s/notes/refs/heads/main/sessi
 awk -F ":" '{print $1F}' # to print the first fragments in all columns
 awk -F ":" '{print $1F,$3F}'
 
+cat filename.txt | awk '{print $3}' | grep "error"
+
+
 head <file-name> # first 10 lines
 head -n 5 <file-name> first 5 lines
 tail <file-name> # last 10 lines
