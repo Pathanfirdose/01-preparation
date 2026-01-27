@@ -7,11 +7,7 @@ The Kubernetes control plane is the brain of the cluster that manages and coordi
 # woker node
 A Kubernetes worker node is responsible for running application workloads and mainly consists of **kubelet** (the node agent that registers the node with the API Server, watches Pod specs, and ensures containers are running and healthy as defined), **container runtime** such as containerd, CRI-O, or Docker (which pulls images and actually creates, starts, and stops containers), **kube-proxy** (handles networking by maintaining iptables or IPVS rules to enable Service discovery and load balancing to Pods), and the CNI plugin (like Calico, Flannel, or Cilium, which sets up pod networking, assigns IP addresses, and enables pod-to-pod communication across nodes), along with supporting OS components such as cgroups and namespaces for resource isolation, and optionally node-level services like log collectors or monitoring agents.
 
-<<<<<<< HEAD
 ![k8-architecture](https://github.com/Pathanfirdose/01-preparation/blob/main/k8-architecture.png)
-=======
-![k8](k8-architecture.png)
->>>>>>> 54e516e19eb149d1299ab998c4076ce127ce59e6
 
 # namespace
 In Kubernetes, a namespace is a logical partition within a cluster that isolates and organizes resources so teams, applications, or environments can work without interfering with each other; it provides scoped naming, separate resource quotas, access control boundaries, and clean separation for things like dev/stage/prod, with default namespaces such as **default**, **kube-system**, **kube-public**, and optional custom namespaces for better management of large multi-tenant clusters.
