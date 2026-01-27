@@ -4,6 +4,10 @@ Kubernetes (K8s) is an open-source container orchestration platform that automat
 # Control plane
 The Kubernetes control plane is the brain of the cluster that manages and coordinates all activities by making global decisions (like scheduling pods), tracking the cluster’s state, and responding to events; it consists of key components such as **kube-apiserver** (the central API through which everything interacts), **etcd** (the distributed key-value store that keeps all cluster data), **kube-scheduler** (decides on which node a pod should run), **kube-controller-manager** (runs controllers like node, replication, and endpoint controllers), and **cloud-controller-manager** (integrates with cloud providers), ensuring the entire cluster runs smoothly and remains desired-state compliant.
 
+# woker node
+A Kubernetes worker node is responsible for running application workloads and mainly consists of **kubelet** (the node agent that registers the node with the API Server, watches Pod specs, and ensures containers are running and healthy as defined), **container runtime** such as containerd, CRI-O, or Docker (which pulls images and actually creates, starts, and stops containers), **kube-proxy** (handles networking by maintaining iptables or IPVS rules to enable Service discovery and load balancing to Pods), and the CNI plugin (like Calico, Flannel, or Cilium, which sets up pod networking, assigns IP addresses, and enables pod-to-pod communication across nodes), along with supporting OS components such as cgroups and namespaces for resource isolation, and optionally node-level services like log collectors or monitoring agents.
+
+
 # namespace
 In Kubernetes, a namespace is a logical partition within a cluster that isolates and organizes resources so teams, applications, or environments can work without interfering with each other; it provides scoped naming, separate resource quotas, access control boundaries, and clean separation for things like dev/stage/prod, with default namespaces such as **default**, **kube-system**, **kube-public**, and optional custom namespaces for better management of large multi-tenant clusters.
 
@@ -16,12 +20,6 @@ metadata:
         project: expence
         environment: dev
 ```
-# labels
-In Kubernetes, labels are simple key-value pairs attached to objects like pods, services, and deployments to identify, categorize, and group them, enabling flexible selection and filtering without affecting the object's actual configuration; they are used heavily for operations such as pod selection by services, rolling updates by deployments, environment tagging (e.g., `env=prod`), and workload organization, with selectors (label selectors) allowing Kubernetes to target specific groups of resources dynamically.
-
-# Annotations
-In Kubernetes, annotations are key-value metadata attached to objects like pods, services, and deployments, similar to labels but intended for storing non-identifying, descriptive, or auxiliary information that tools and controllers can use; unlike labels, annotations are not used for selecting or filtering objects and can hold larger, more detailed data such as build info, release notes, contact details, debugging hints, or configuration metadata for external systems, helping enrich resources without affecting how Kubernetes manages or groups them.
-
 # Pod
 A pod in Kubernetes is the smallest deployable unit that represents one or more tightly coupled containers sharing the same network namespace, IP address, storage volumes, and lifecycle, allowing them to communicate efficiently and behave as a single application component, with Kubernetes scheduling pods onto nodes, restarting them if they fail, and managing them through higher-level controllers like Deployments or StatefulSets since pods themselves are ephemeral and not meant to be managed directly.
 
@@ -69,17 +67,75 @@ spec:
     - name: nginx
       image: nginx
 ```
-# CrashLoopBackOff
-**CrashLoopBackOff** in Kubernetes is a pod state that indicates a container is repeatedly crashing and restarting, and Kubernetes is backing off (waiting longer between retries) to avoid an endless loop. It happens when the container starts, fails, restarts, fails again, and so on. Common causes include application errors, missing config/env variables, failed dependencies, wrong image commands, permission issues, or readiness/liveness probe misconfigurations. You can troubleshoot by checking logs (`kubectl logs`), describing the pod (`kubectl describe pod <pod>`), verifying configuration, and fixing the root cause so the container can start successfully without crashing.
 
+# Annotations
+In Kubernetes, annotations are key-value metadata attached to objects like pods, services, and deployments, similar to labels but intended for storing non-identifying, descriptive, or auxiliary information that tools and controllers can use; unlike labels, annotations are not used for selecting or filtering objects and can hold larger, more detailed data such as build info, release notes, contact details, debugging hints, or configuration metadata for external systems, helping enrich resources without affecting how Kubernetes manages or groups them.
+
+```yaml
+apiversion: v1
+kind: pod
+metadata:
+    name: annotations
+    annotations:
+        imageregistry: "https://hub.docker.com/"
+        buildurl: "https://jenkins.joindevops.com/expense/backend/build/67"
+spec:
+    containers:
+    - name: nginx
+      image: nginx
+```
 # ENV
 In a Dockerfile, **ENV** is an instruction used to set environment variables inside the image so they are available to the container at runtime, allowing you to define configuration values, paths, or settings (e.g., `ENV APP_ENV=production`), which can then be accessed by applications or subsequent Dockerfile instructions; these variables persist in the final image layer and can be overridden later using `docker run -e` or Kubernetes environment variable settings.
 
+```yaml
+apiversion: v1
+kind: pod
+metadata:
+  name: environment
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    env:
+      - name: course
+        value: devops
+      - name: trainer
+        value: siva
+      - name: duration
+        value: 4 months
+```
 # resource-limit
 In Kubernetes, **resource limits** define the maximum amount of CPU and memory a container is allowed to use, ensuring no single workload consumes excessive cluster resources; they work alongside **requests** (the minimum guaranteed resources) so the scheduler can place pods appropriately, and when a container exceeds its memory limit it is killed with an OOM error, while exceeding CPU limits causes throttling, making resource limits essential for stability, fairness, and predictable performance in multi-tenant clusters.
 
+```yaml
+apiverion: v1
+kind: pod
+metadata:
+  name: limit
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        cpu: 100m
+        memory: 68mi
+      limits:
+        cpu: 120m
+        memory: 100Mi
+```
 # Configmap
 A ConfigMap in Kubernetes is an object used to store non-sensitive configuration data as key-value pairs so you can decouple configuration from container images and manage it centrally; applications can consume ConfigMaps as environment variables, command-line arguments, or mounted configuration files, enabling easy updates without rebuilding images, and ConfigMaps are typically used for things like app settings, URLs, feature flags, or config files that need to be injected into pods at runtime.
+
+```yaml
+apiversion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  coure: devops
+  duration: 4 months
+```
 
 # secrets
 In Kubernetes, a Secret is an object designed to store sensitive data such as passwords, tokens, certificates, and API keys in a base64-encoded form, allowing you to separate confidential information from container images and application code; Secrets can be injected into pods as environment variables or mounted as files, and they help reduce exposure by being stored in etcd with optional encryption at rest, having stricter access controls, and minimizing the risk of accidentally exposing sensitive values during deployments or logs.
@@ -115,7 +171,8 @@ In a Kubernetes **StatefulSet**, pods are created using a strict, ordered, and i
 
 A **Headless Service** in Kubernetes is a service created **without a cluster-assigned virtual IP** by setting `clusterIP: None`, allowing clients to directly discover and connect to individual pod IPs instead of load-balanced traffic; it is commonly used with **StatefulSets** to provide stable DNS records per pod (like `pod-0.service-name.namespace.svc.cluster.local`), enabling direct pod-to-pod communication, custom load balancing, and service discovery mechanisms such as those required by databases, distributed systems, or applications needing awareness of each pod instance.
 
-
+# CrashLoopBackOff
+**CrashLoopBackOff** in Kubernetes is a pod state that indicates a container is repeatedly crashing and restarting, and Kubernetes is backing off (waiting longer between retries) to avoid an endless loop. It happens when the container starts, fails, restarts, fails again, and so on. Common causes include application errors, missing config/env variables, failed dependencies, wrong image commands, permission issues, or readiness/liveness probe misconfigurations. You can troubleshoot by checking logs (`kubectl logs`), describing the pod (`kubectl describe pod <pod>`), verifying configuration, and fixing the root cause so the container can start successfully without crashing.
 =============================================================================================
 
 
